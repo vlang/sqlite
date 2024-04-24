@@ -18,13 +18,16 @@ jobs:
       - name: Checkout the V SQLite module
         uses: actions/checkout@v4
         with:
-          path: ~/.vmodules/sqlite
+          path: mysqlite
       - name: Build local v
         run: make && ./v symlink -githubci
+      - name: Link local checkout to vmodules
+        run: ln -s $(realpath mysqlite) ~/.vmodules/sqlite
 
       - name: Test code formatting
         run: |
           v fmt -verify ~/.vmodules/sqlite
+          v fmt -w ~/.vmodules/sqlite
       - name: Run tests
         run: v test ~/.vmodules/sqlite
 
@@ -40,13 +43,16 @@ jobs:
       - name: Checkout the V SQLite module
         uses: actions/checkout@v4
         with:
-          path: ~/.vmodules/sqlite
+          path: mysqlite
       - name: Build local v
         run: make && ./v symlink -githubci
+      - name: Link local checkout to vmodules
+        run: ln -s $(realpath mysqlite) ~/.vmodules/sqlite
 
       - name: Test code formatting
         run: |
           v fmt -verify ~/.vmodules/sqlite
+          v fmt -w ~/.vmodules/sqlite
       - name: Run tests
         run: v test ~/.vmodules/sqlite
 
@@ -71,5 +77,6 @@ jobs:
       - name: Test code formatting
         run: |
           v fmt -verify ~/.vmodules/sqlite
+          v fmt -w ~/.vmodules/sqlite
       - name: Run tests
         run: v test ~/.vmodules/sqlite
