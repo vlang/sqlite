@@ -1,14 +1,18 @@
 #!/bin/bash
 
-curl -L https://www.sqlite.org/2022/sqlite-amalgamation-3380200.zip -o sqlite-amalgamation-3380200.zip
+set -ve
 
-unzip sqlite-amalgamation-3380200.zip
+AMALGAMA_NAME=sqlite-amalgamation-3450300
 
-rm -rf sqlite-amalgamation-3380200.zip
-rm -rf sqlite-amalgamation-3380200/shell.c
+curl -L https://www.sqlite.org/2024/$AMALGAMA_NAME.zip -o $AMALGAMA_NAME.zip
 
-mv sqlite-amalgamation-3380200/* .
-rm -rf sqlite-amalgamation-3380200/
+unzip $AMALGAMA_NAME.zip
+
+rm -rf $AMALGAMA_NAME.zip
+rm -rf $AMALGAMA_NAME/shell.c
+
+mv $AMALGAMA_NAME/* .
+rm -rf $AMALGAMA_NAME/
 
 ls -lart .
 
