@@ -8,15 +8,13 @@ module sqlite
 #include "sqlite3.h"
 
 $if linux {
-    #flag -ldl
+	#flag -ldl
 }
 
-pub const (
-	sqlite_ok    = 0
-	sqlite_error = 1
-	sqlite_row   = 100
-	sqlite_done  = 101
-)
+pub const sqlite_ok = 0
+pub const sqlite_error = 1
+pub const sqlite_row = 100
+pub const sqlite_done = 101
 
 struct C.sqlite3 {
 }
@@ -211,7 +209,7 @@ pub fn (db DB) exec_one(query string) ?Row {
 pub fn (db DB) error_message(code int, query string) IError {
 	msg := unsafe { cstring_to_vstring(&char(C.sqlite3_errmsg(db.conn))) }
 	return IError(&SQLError{
-		msg: '$msg ($code) ($query)'
+		msg: '${msg} (${code}) (${query})'
 		code: code
 	})
 }
@@ -230,7 +228,7 @@ pub fn (db DB) exec_param(query string, param string) []Row {
 */
 
 pub fn (db DB) create_table(table_name string, columns []string) {
-	db.exec('create table if not exists $table_name (' + columns.join(',\n') + ')')
+	db.exec('create table if not exists ${table_name} (' + columns.join(',\n') + ')')
 }
 
 // Set a busy timeout in milliseconds https://www.sqlite.org/c3ref/busy_timeout.html
