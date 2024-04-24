@@ -1,4 +1,4 @@
-import db.sqlite
+import sqlite
 import rand
 
 const max_file_name_len = 256

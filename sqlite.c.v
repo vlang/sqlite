@@ -5,6 +5,12 @@ module sqlite
 #flag  @VMODROOT/sqlite3.o
 #flag  -lpthread
 
+$if tinyc {
+	// Needed because there are two usages of `fabs` in `sqlite3.c:129796:if( fabs(s) > fabs(r) ){`
+	// gcc and clang manage to compile it without needing -lm ...
+	#flag -lm
+}
+
 #include "sqlite3.h"
 
 // https://www.sqlite.org/rescode.html
