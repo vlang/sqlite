@@ -1,0 +1,75 @@
+name: SQLite CI
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+jobs:
+  sqlite-macos:
+    runs-on: macos-latest
+    env:
+      VFLAGS: -no-retry-compilation
+    steps:
+      - name: Checkout V
+        uses: actions/checkout@v4
+        with:
+          repository: vlang/v
+      - name: Checkout the V SQLite module
+        uses: actions/checkout@v4
+        with:
+          path: ~/.vmodules/sqlite
+      - name: Build local v
+        run: make && ./v symlink -githubci
+
+      - name: Test code formatting
+        run: |
+          v fmt -verify ~/.vmodules/sqlite
+      - name: Run tests
+        run: v test ~/.vmodules/sqlite
+
+  sqlite-linux:
+    runs-on: ubuntu-20.04
+    env:
+      VFLAGS: -cc tcc -no-retry-compilation
+    steps:
+      - name: Checkout V
+        uses: actions/checkout@v4
+        with:
+          repository: vlang/v
+      - name: Checkout the V SQLite module
+        uses: actions/checkout@v4
+        with:
+          path: ~/.vmodules/sqlite
+      - name: Build local v
+        run: make && ./v symlink -githubci
+
+      - name: Test code formatting
+        run: |
+          v fmt -verify ~/.vmodules/sqlite
+      - name: Run tests
+        run: v test ~/.vmodules/sqlite
+
+  windows-gcc:
+    runs-on: windows-2019
+    env:
+      VFLAGS: -cc gcc -no-retry-compilation
+    steps:
+      - name: Checkout V
+        uses: actions/checkout@v4
+        with:
+          repository: vlang/v
+      - name: Checkout the V SQLite module
+        uses: actions/checkout@v4
+        with:
+          path: ~/.vmodules/sqlite
+      - name: Build local v
+        run: |
+          .\make.bat -gcc
+          .\v.exe symlink -githubci
+
+      - name: Test code formatting
+        run: |
+          v fmt -verify ~/.vmodules/sqlite
+      - name: Run tests
+        run: v test ~/.vmodules/sqlite
