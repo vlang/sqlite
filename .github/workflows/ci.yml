@@ -57,7 +57,7 @@ jobs:
         run: v test ~/.vmodules/sqlite
 
   sqlite-windows:
-    runs-on: windows-2019
+    runs-on: windows-2025
     env:
       VFLAGS: -cc gcc -no-retry-compilation
     steps:
