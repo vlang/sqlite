@@ -1,5 +1,4 @@
-// vtest build: present_sqlite3?
-import db.sqlite
+import sqlite
 
 type Connection = sqlite.DB
 

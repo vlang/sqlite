@@ -1,7 +1,6 @@
-// vtest build: present_sqlite3?
 module main
 
-import db.sqlite
+import sqlite
 
 @[table: 'blog']
 pub struct Blog {
