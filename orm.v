@@ -3,12 +3,12 @@ module sqlite
 import orm
 import time
 
-// @select is used internally by V's ORM for processing `SELECT ` queries
-pub fn (db DB) @select(config orm.SelectConfig, data orm.QueryData, where orm.QueryData) ![][]orm.Primitive {
+// select is used internally by V's ORM for processing `SELECT ` queries
+pub fn (db DB) select(config orm.SelectConfig, data orm.QueryData, where orm.QueryData) ![][]orm.Primitive {
 	// 1. Create query and bind necessary data
 	query := orm.orm_select_gen(config, '`', true, '?', 1, where)
 	$if trace_sqlite ? {
-		eprintln('> @select query: "${query}"')
+		eprintln('> select query: "${query}"')
 	}
 	stmt := db.new_init_stmt(query)!
 	defer {
@@ -52,20 +52,20 @@ pub fn (db DB) @select(config orm.SelectConfig, data orm.QueryData, where orm.Qu
 // sql stmt
 
 // insert is used internally by V's ORM for processing `INSERT ` queries
-pub fn (db DB) insert(table string, data orm.QueryData) ! {
+pub fn (db DB) insert(table orm.Table, data orm.QueryData) ! {
 	query, converted_data := orm.orm_stmt_gen(.sqlite, table, '`', .insert, true, '?',
 		1, data, orm.QueryData{})
 	sqlite_stmt_worker(db, query, converted_data, orm.QueryData{})!
 }
 
 // update is used internally by V's ORM for processing `UPDATE ` queries
-pub fn (db DB) update(table string, data orm.QueryData, where orm.QueryData) ! {
+pub fn (db DB) update(table orm.Table, data orm.QueryData, where orm.QueryData) ! {
 	query, _ := orm.orm_stmt_gen(.sqlite, table, '`', .update, true, '?', 1, data, where)
 	sqlite_stmt_worker(db, query, data, where)!
 }
 
 // delete is used internally by V's ORM for processing `DELETE ` queries
-pub fn (db DB) delete(table string, where orm.QueryData) ! {
+pub fn (db DB) delete(table orm.Table, where orm.QueryData) ! {
 	query, _ := orm.orm_stmt_gen(.sqlite, table, '`', .delete, true, '?', 1, orm.QueryData{},
 		where)
 	sqlite_stmt_worker(db, query, orm.QueryData{}, where)!
@@ -81,16 +81,15 @@ pub fn (db DB) last_id() int {
 // DDL (table creation/destroying etc)
 
 // create is used internally by V's ORM for processing table creation queries (DDL)
-pub fn (db DB) create(table string, fields []orm.TableField) ! {
-	query := orm.orm_table_gen(table, '`', true, 0, fields, sqlite_type_from_v, false) or {
-		return err
-	}
+pub fn (db DB) create(table orm.Table, fields []orm.TableField) ! {
+	query := orm.orm_table_gen(.sqlite, table, '`', true, 0, fields, sqlite_type_from_v,
+		false) or { return err }
 	sqlite_stmt_worker(db, query, orm.QueryData{}, orm.QueryData{})!
 }
 
 // drop is used internally by V's ORM for processing table destroying queries (DDL)
-pub fn (db DB) drop(table string) ! {
-	query := 'DROP TABLE `${table}`;'
+pub fn (db DB) drop(table orm.Table) ! {
+	query := 'DROP TABLE `${table.name}`;'
 	sqlite_stmt_worker(db, query, orm.QueryData{}, orm.QueryData{})!
 }
 
@@ -114,7 +113,7 @@ fn sqlite_stmt_worker(db DB, query string, data orm.QueryData, where orm.QueryDa
 // Binds all values of d in the prepared statement
 fn sqlite_stmt_binder(stmt Stmt, d orm.QueryData, query string, mut c &int) ! {
 	for data in d.data {
-		err := bind(stmt, c, data)
+		err := bind(stmt, mut c, data)
 
 		if err != 0 {
 			return stmt.db.error_message(err, query)
@@ -124,7 +123,7 @@ fn sqlite_stmt_binder(stmt Stmt, d orm.QueryData, query string, mut c &int) ! {
 }
 
 // Universal bind function
-fn bind(stmt Stmt, c &int, data orm.Primitive) int {
+fn bind(stmt Stmt, mut c &int, data orm.Primitive) int {
 	mut err := 0
 	match data {
 		i8, i16, int, u8, u16, u32, bool {
@@ -143,10 +142,20 @@ fn bind(stmt Stmt, c &int, data orm.Primitive) int {
 			err = stmt.bind_int(c, int(data.unix()))
 		}
 		orm.InfixType {
-			err = bind(stmt, c, data.right)
+			err = bind(stmt, mut c, data.right)
 		}
 		orm.Null {
 			err = stmt.bind_null(c)
+		}
+		[]orm.Primitive {
+			for element in data {
+				tmp_err := bind(stmt, mut c, element)
+				c++
+				if tmp_err != 0 {
+					err = tmp_err
+					break
+				}
+			}
 		}
 	}
 	return err
