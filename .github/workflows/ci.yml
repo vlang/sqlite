@@ -20,7 +20,7 @@ jobs:
         with:
           path: mysqlite
       - name: Build local v
-        run: make && ./v symlink -githubci
+        run: make && ./v symlink
       - name: Link local checkout to vmodules
         run: ln -s $(realpath mysqlite) ~/.vmodules/sqlite
 
@@ -45,7 +45,7 @@ jobs:
         with:
           path: mysqlite
       - name: Build local v
-        run: make && ./v symlink -githubci
+        run: make && ./v symlink
       - name: Link local checkout to vmodules
         run: ln -s $(realpath mysqlite) ~/.vmodules/sqlite
 
@@ -72,7 +72,7 @@ jobs:
       - name: Build local v
         run: |
           .\make.bat -gcc
-          .\v.exe symlink -githubci
+          .\v.exe symlink
 
       - name: Test code formatting
         run: |
