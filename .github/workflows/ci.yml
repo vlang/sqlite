@@ -55,6 +55,10 @@ jobs:
           v fmt -w ~/.vmodules/sqlite
       - name: Run tests
         run: v test ~/.vmodules/sqlite
+      - name: Run tests with clang
+        run: v -cc clang test ~/.vmodules/sqlite
+      - name: Run tests with gcc
+        run: v -cc gcc   test ~/.vmodules/sqlite
 
   sqlite-windows:
     runs-on: windows-latest
