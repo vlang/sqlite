@@ -32,9 +32,9 @@ jobs:
         run: v test ~/.vmodules/sqlite
 
   sqlite-linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
-      VFLAGS: -cc tcc -no-retry-compilation
+      VFLAGS: -no-retry-compilation
     steps:
       - name: Checkout V
         uses: actions/checkout@v4
@@ -57,9 +57,9 @@ jobs:
         run: v test ~/.vmodules/sqlite
 
   sqlite-windows:
-    runs-on: windows-2025
+    runs-on: windows-latest
     env:
-      VFLAGS: -cc gcc -no-retry-compilation
+      VFLAGS: -no-retry-compilation
     steps:
       - name: Checkout V
         uses: actions/checkout@v4
@@ -78,5 +78,13 @@ jobs:
         run: |
           v fmt -verify ~/.vmodules/sqlite
           v fmt -w ~/.vmodules/sqlite
-      - name: Run tests
+
+      - name: Run tests with tcc:   
         run: v test ~/.vmodules/sqlite
+      - name: Run tests with msvc:
+        run: v -cc msvc  test ~/.vmodules/sqlite
+      - name: Run tests with clang:
+        run: v -cc clang test ~/.vmodules/sqlite
+      - name: Run tests with gcc:
+        run: v -cc gcc   test ~/.vmodules/sqlite
+
