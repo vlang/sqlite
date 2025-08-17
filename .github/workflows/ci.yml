@@ -78,13 +78,11 @@ jobs:
         run: |
           v fmt -verify ~/.vmodules/sqlite
           v fmt -w ~/.vmodules/sqlite
-
-      - name: Run tests with tcc:   
+      - name: Run tests with tcc
         run: v test ~/.vmodules/sqlite
-      - name: Run tests with msvc:
+      - name: Run tests with msvc
         run: v -cc msvc  test ~/.vmodules/sqlite
-      - name: Run tests with clang:
+      - name: Run tests with clang
         run: v -cc clang test ~/.vmodules/sqlite
-      - name: Run tests with gcc:
+      - name: Run tests with gcc
         run: v -cc gcc   test ~/.vmodules/sqlite
-
