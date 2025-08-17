@@ -1,2 +1,3 @@
 *.zip
 *_test
+sqlite3.obj

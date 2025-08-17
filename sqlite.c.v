@@ -3,9 +3,12 @@ module sqlite
 #flag -I@VMODROOT
 #flag -L@VMODROOT
 #flag  @VMODROOT/sqlite3.o
-#flag  -lpthread
 
-$if tinyc {
+$if !windows {
+	#flag  -lpthread
+}
+
+$if tinyc && !windows {
 	// Needed because there are two usages of `fabs` in `sqlite3.c:129796:if( fabs(s) > fabs(r) ){`
 	// gcc and clang manage to compile it without needing -lm ...
 	#flag -lm
