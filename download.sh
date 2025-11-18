@@ -2,9 +2,9 @@
 
 set -ve
 
-AMALGAMA_NAME=sqlite-amalgamation-3450300
+AMALGAMA_NAME=sqlite-amalgamation-3510000
 
-curl -L https://www.sqlite.org/2024/$AMALGAMA_NAME.zip -o $AMALGAMA_NAME.zip
+curl -L https://sqlite.org/2025/$AMALGAMA_NAME.zip -o $AMALGAMA_NAME.zip
 
 unzip $AMALGAMA_NAME.zip
 
@@ -15,4 +15,3 @@ mv $AMALGAMA_NAME/* .
 rm -rf $AMALGAMA_NAME/
 
 ls -lart .
-
