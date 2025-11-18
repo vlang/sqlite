@@ -1,11 +1,11 @@
-curl -L https://www.sqlite.org/2024/sqlite-amalgamation-3450300.zip -o sqlite-amalgamation-3450300.zip
+curl -L https://sqlite.org/2025/sqlite-amalgamation-3510000.zip -o sqlite-amalgamation-3510000.zip
 
-unzip sqlite-amalgamation-3450300.zip
+unzip sqlite-amalgamation-3510000.zip
 
-del sqlite-amalgamation-3450300.zip
-del sqlite-amalgamation-3450300\shell.c
+del sqlite-amalgamation-3510000.zip
+del sqlite-amalgamation-3510000.zip\shell.c
 
-move /y sqlite-amalgamation-3450300\*.* .
-rmdir /s /q sqlite-amalgamation-3450300
+move /y sqlite-amalgamation-3510000.zip\*.* .
+rmdir /s /q sqlite-amalgamation-3510000.zip
 
 dir .
