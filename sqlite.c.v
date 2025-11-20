@@ -124,6 +124,7 @@ fn C.sqlite3_column_count(&C.sqlite3_stmt) int
 
 fn C.sqlite3_column_type(&C.sqlite3_stmt, int) int
 
+fn C.sqlite3_column_bytes(&C.sqlite3_stmt, int) int
 //
 fn C.sqlite3_errstr(int) &char
 
